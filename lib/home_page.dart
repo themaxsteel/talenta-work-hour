@@ -75,8 +75,16 @@ class _HomePageState extends State<HomePage> {
                 Duration clock = const Duration();
                 Duration breaks = const Duration();
 
-                clock = dateParse(attributes.clockoutTime ?? attributes.clockOut ?? "2023-01-01")
-                    .difference(dateParse(attributes.clockinTime ?? attributes.clockIn ?? "2023-01-01"));
+                if (attributes.clockinTime != null && attributes.clockoutTime != null) {
+                  clock = dateParse(attributes.clockoutTime!).difference(dateParse(attributes.clockinTime!));
+                } else if (attributes.clockIn != null && attributes.clockOut != null) {
+                  clock = dateParse(attributes.clockOut!).difference(dateParse(attributes.clockIn!));
+                }
+                // else if (DateFormat("d").format(dateParse(attributes.clockIn ?? "2023-01-01")) ==
+                //     DateFormat("d").format(DateTime.now())) {
+                //   clock = DateTime.now().difference(dateParse(attributes.clockIn ?? "2023-01-01"));
+                //   print(DateFormat("HH:mm").format(DateTime.now()));
+                // }
 
                 if (attributes.breakCheckin != null && attributes.breakCheckout != null) {
                   breaks = dateParse(attributes.breakCheckout!).difference(dateParse(attributes.breakCheckin!));
@@ -86,7 +94,10 @@ class _HomePageState extends State<HomePage> {
 
                 return Container(
                   padding: const EdgeInsets.symmetric(vertical: 12),
-                  decoration: BoxDecoration(border: Border.all(color: const Color(0xFFEEEEEE))),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: const Color(0xFFEEEEEE)),
+                    color: attributes.officeHourName == "dayoff" ? Colors.red.withOpacity(0.3) : null,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -133,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       Expanded(
                         child: Text(
-                          clockHour.isNegative ? "00 : 00 : 00" : _printDuration(clockHour),
+                          _printDuration(clockHour),
                           style: TextStyle(
                               fontWeight: FontWeight.bold, color: clockHour.inHours >= 1 ? Colors.green : Colors.red),
                         ),
