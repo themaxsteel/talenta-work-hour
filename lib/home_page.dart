@@ -52,6 +52,10 @@ class _HomePageState extends State<HomePage> {
             Center(
               child: Text("Jam Kerja Yang Dibutuhkan: ${_printDuration(_calculateRequiredWorkHour(talenta!.data!))}"),
             ),
+            Center(
+              child: Text(
+                  "Total Jam Kerja Yang Dibutuhkan Sekarang: ${_printDuration(_calculateRequiredWorkHourNow(talenta!.data!))}"),
+            ),
             const SizedBox(height: 32),
             const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -200,6 +204,19 @@ class _HomePageState extends State<HomePage> {
     Duration duration = Duration();
     for (var item in data) {
       if (item.attributes!.officeHourName != "dayoff") {
+        duration += const Duration(hours: 8);
+      }
+    }
+    return duration;
+  }
+
+  Duration _calculateRequiredWorkHourNow(List<Data> data) {
+    Duration duration = Duration();
+    for (var item in data) {
+      print(DateTime.parse(item.attributes!.scheduleDate!).difference(DateTime.now()).inDays > 0);
+
+      if (item.attributes!.officeHourName != "dayoff" &&
+          DateTime.parse(item.attributes!.scheduleDate!).difference(DateTime.now()).inDays < 0) {
         duration += const Duration(hours: 8);
       }
     }
