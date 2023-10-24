@@ -201,7 +201,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Duration _calculateRequiredWorkHour(List<Data> data) {
-    Duration duration = Duration();
+    Duration duration = const Duration();
     for (var item in data) {
       if (item.attributes!.officeHourName != "dayoff") {
         duration += const Duration(hours: 8);
@@ -211,12 +211,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   Duration _calculateRequiredWorkHourNow(List<Data> data) {
-    Duration duration = Duration();
+    Duration duration = const Duration();
     for (var item in data) {
-      print(DateTime.parse(item.attributes!.scheduleDate!).difference(DateTime.now()).inDays > 0);
+      print(DateTime.parse(item.attributes!.scheduleDate!).difference(DateTime.now()).inDays);
+      print(item.attributes!.scheduleDate!);
 
       if (item.attributes!.officeHourName != "dayoff" &&
-          DateTime.parse(item.attributes!.scheduleDate!).difference(DateTime.now()).inDays < 0) {
+          DateTime.parse(item.attributes!.scheduleDate!).difference(DateTime.now()).inHours < 0) {
         duration += const Duration(hours: 8);
       }
     }
