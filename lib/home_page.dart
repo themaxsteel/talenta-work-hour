@@ -75,10 +75,10 @@ class _HomePageState extends State<HomePage> {
                 Duration clock = const Duration();
                 Duration breaks = const Duration();
 
-                if (attributes.clockinTime != null && attributes.clockoutTime != null) {
-                  clock = dateParse(attributes.clockoutTime!).difference(dateParse(attributes.clockinTime!));
-                } else if (attributes.clockIn != null && attributes.clockOut != null) {
+                if (attributes.clockIn != null && attributes.clockOut != null) {
                   clock = dateParse(attributes.clockOut!).difference(dateParse(attributes.clockIn!));
+                } else if (attributes.clockinTime != null && attributes.clockoutTime != null) {
+                  clock = dateParse(attributes.clockoutTime!).difference(dateParse(attributes.clockinTime!));
                 }
                 // else if (DateFormat("d").format(dateParse(attributes.clockIn ?? "2023-01-01")) ==
                 //     DateFormat("d").format(DateTime.now())) {
@@ -86,7 +86,12 @@ class _HomePageState extends State<HomePage> {
                 //   print(DateFormat("HH:mm").format(DateTime.now()));
                 // }
 
-                if (attributes.breakCheckin != null && attributes.breakCheckout != null) {
+                if (attributes.clockIn != null &&
+                    attributes.clockOut != null &&
+                    attributes.clockinTime != null &&
+                    attributes.clockoutTime != null &&
+                    attributes.breakCheckin != null &&
+                    attributes.breakCheckout != null) {
                   breaks = dateParse(attributes.breakCheckout!).difference(dateParse(attributes.breakCheckin!));
                 }
 
