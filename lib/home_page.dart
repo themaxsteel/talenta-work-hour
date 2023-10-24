@@ -48,7 +48,24 @@ class _HomePageState extends State<HomePage> {
           ),
           const SizedBox(height: 64),
           if (talenta != null) ...[
-            Center(child: Text("Total Jam Kerja: ${_printDuration(workHour!)}")),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Total Jam Kerja: ${_printDuration(workHour!)}",
+                ),
+                SizedBox(width: 12),
+                Builder(builder: (context) {
+                  Duration duration = _workHourPlusMinus(talenta!.data!);
+
+                  return Text(
+                    "(${duration.isNegative ? "-" : "+"}${_printDuration(duration)})",
+                    style:
+                        TextStyle(color: duration.isNegative ? Colors.red : Colors.green, fontWeight: FontWeight.w500),
+                  );
+                })
+              ],
+            ),
             Center(
               child: Text("Jam Kerja Yang Dibutuhkan: ${_printDuration(_calculateRequiredWorkHour(talenta!.data!))}"),
             ),
@@ -84,11 +101,6 @@ class _HomePageState extends State<HomePage> {
                 } else if (attributes.clockinTime != null && attributes.clockoutTime != null) {
                   clock = dateParse(attributes.clockoutTime!).difference(dateParse(attributes.clockinTime!));
                 }
-                // else if (DateFormat("d").format(dateParse(attributes.clockIn ?? "2023-01-01")) ==
-                //     DateFormat("d").format(DateTime.now())) {
-                //   clock = DateTime.now().difference(dateParse(attributes.clockIn ?? "2023-01-01"));
-                //   print(DateFormat("HH:mm").format(DateTime.now()));
-                // }
 
                 if (attributes.clockIn != null &&
                     attributes.clockOut != null &&
@@ -151,7 +163,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       Expanded(
                         child: Text(
-                          _printDuration(clockHour),
+                          "${_printDuration(clockHour)} ${clockHour - Duration(hours: 8)}",
                           style: TextStyle(
                               fontWeight: FontWeight.bold, color: clockHour.inHours >= 1 ? Colors.green : Colors.red),
                         ),
@@ -230,6 +242,13 @@ class _HomePageState extends State<HomePage> {
     String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60).abs());
     String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60).abs());
     return "$negativeSign${twoDigits(duration.inHours)} : $twoDigitMinutes : $twoDigitSeconds";
+  }
+
+  Duration _workHourPlusMinus(List<Data> data) {
+    Duration workHour = _calculateWorkHour(data);
+    Duration requiredWorkHourNow = _calculateRequiredWorkHourNow(data);
+
+    return workHour - requiredWorkHourNow;
   }
 
   DateTime dateParse(String date) => DateTime.parse(date);
