@@ -88,8 +88,6 @@ class _HomePageState extends State<HomePage> {
 
                 if (attributes.clockIn != null &&
                     attributes.clockOut != null &&
-                    attributes.clockinTime != null &&
-                    attributes.clockoutTime != null &&
                     attributes.breakCheckin != null &&
                     attributes.breakCheckout != null) {
                   breaks = dateParse(attributes.breakCheckout!).difference(dateParse(attributes.breakCheckin!));
