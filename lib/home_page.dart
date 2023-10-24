@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
                 Text(
                   "Total Jam Kerja: ${_printDuration(workHour!)}",
                 ),
-                SizedBox(width: 12),
+                const SizedBox(width: 12),
                 Builder(builder: (context) {
                   Duration duration = _workHourPlusMinus(talenta!.data!);
 
@@ -161,13 +161,28 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: Text(
-                          "${_printDuration(clockHour)} ${clockHour - Duration(hours: 8)}",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, color: clockHour.inHours >= 1 ? Colors.green : Colors.red),
-                        ),
-                      ),
+                      Builder(builder: (context) {
+                        Duration duration = clockHour - const Duration(hours: 8);
+                        return Expanded(
+                          child: Row(
+                            children: [
+                              Text(
+                                "${_printDuration(clockHour)}  ",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: clockHour.inHours >= 1 ? Colors.green : Colors.red),
+                              ),
+                              if (attributes.officeHourName != "dayoff")
+                                Text(
+                                  "(${duration.isNegative ? "" : "+"}${_printDuration(duration)})",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: duration.isNegative ? Colors.red : Colors.green),
+                                )
+                            ],
+                          ),
+                        );
+                      }),
                     ],
                   ),
                 );
@@ -209,6 +224,7 @@ class _HomePageState extends State<HomePage> {
         duration += (clock + breaks);
       }
     }
+    duration += const Duration(hours: 8);
     return duration;
   }
 
